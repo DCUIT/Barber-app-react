@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { bookingsApi } from '../../api/bookings';
@@ -11,14 +11,18 @@ export default function AdminDashboardScreen() {
   const nav = useNavigation<any>();
   const [stats, setStats] = useState({ totalBookings: 0, totalBarbers: 0, totalUsers: 0 });
   const [loading, setLoading] = useState(true);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
+    mountedRef.current = true;
     (async () => {
       try {
         const [bRes, baRes, uRes] = await Promise.all([bookingsApi.getAll(), barbersApi.getAll(), authApi.getUsers()]);
+        if (!mountedRef.current) return;
         setStats({ totalBookings: bRes.data.totalCount || bRes.data.bookings?.length || 0, totalBarbers: baRes.data?.length || 0, totalUsers: uRes.data?.length || 0 });
-      } catch {} finally { setLoading(false); }
+      } catch {} finally { if (mountedRef.current) setLoading(false); }
     })();
+    return () => { mountedRef.current = false; };
   }, []);
 
   if (loading) return <Loading fullScreen />;

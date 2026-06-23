@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { servicesApi } from '../../api/services';
@@ -17,13 +17,14 @@ export default function AdminServicesScreen() {
   const [editing, setEditing] = useState<Service | null>(null);
   const [form, setForm] = useState({ name: '', price: '', duration: '', description: '' });
   const [saving, setSaving] = useState(false);
+  const mountedRef = useRef(true);
 
   const fetch = useCallback(async () => {
-    try { const res = await servicesApi.getAll(); setServices(res.data || []); }
-    catch {} finally { setLoading(false); setRefreshing(false); }
+    try { const res = await servicesApi.getAll(); if (mountedRef.current) setServices(res.data || []); }
+    catch {} finally { if (mountedRef.current) { setLoading(false); setRefreshing(false); } }
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { mountedRef.current = true; fetch(); return () => { mountedRef.current = false; }; }, [fetch]);
 
   const openCreate = () => { setEditing(null); setForm({ name: '', price: '', duration: '', description: '' }); setModal(true); };
   const openEdit = (svc: Service) => { setEditing(svc); setForm({ name: svc.name, price: String(svc.price), duration: String(svc.durationMinutes), description: svc.description || '' }); setModal(true); };
@@ -40,10 +41,10 @@ export default function AdminServicesScreen() {
     finally { setSaving(false); }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     try { await servicesApi.delete(id); Toast.show({ type: 'success', text1: 'Đã xóa' }); fetch(); }
     catch { Toast.show({ type: 'error', text1: 'Xóa thất bại' }); }
-  };
+  }, [fetch]);
 
   if (loading) return <Loading fullScreen />;
 

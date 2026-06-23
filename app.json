@@ -10,19 +10,21 @@
       "backgroundColor": "#1a1a2e",
       "resizeMode": "contain"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": ["assets/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.barber.cuttingedge"
+      "bundleIdentifier": "com.barber.cuttingedge",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["tel"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#1a1a2e"
       },
-      "package": "com.barber.cuttingedge"
+      "package": "com.barber.cuttingedge",
+      "jsEngine": "hermes"
     },
-    "plugins": [
-      "expo-router"
-    ]
+    "plugins": []
   }
 }

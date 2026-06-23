@@ -1,8 +1,8 @@
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, memo } from 'react-native';
 
 interface TimeSlotProps { time: string; selected?: boolean; onPress?: () => void; disabled?: boolean }
 
-export default function TimeSlot({ time, selected, onPress, disabled }: TimeSlotProps) {
+const TimeSlot = memo(function TimeSlot({ time, selected, onPress, disabled }: TimeSlotProps) {
   return (
     <TouchableOpacity
       onPress={disabled ? undefined : onPress}
@@ -11,4 +11,6 @@ export default function TimeSlot({ time, selected, onPress, disabled }: TimeSlot
       <Text className={`font-bold text-sm ${selected ? 'text-black' : disabled ? 'text-gray-600' : 'text-white'}`}>{time}</Text>
     </TouchableOpacity>
   );
-}
+});
+
+export default TimeSlot;

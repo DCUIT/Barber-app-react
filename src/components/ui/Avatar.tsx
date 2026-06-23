@@ -1,8 +1,8 @@
-import { Image, View, Text } from 'react-native';
+import { Image, View, Text, memo } from 'react-native';
 
 interface AvatarProps { uri?: string; name?: string; size?: number }
 
-export default function Avatar({ uri, name, size = 48 }: AvatarProps) {
+const Avatar = memo(function Avatar({ uri, name, size = 48 }: AvatarProps) {
   if (uri) {
     return <Image source={{ uri }} style={{ width: size, height: size, borderRadius: size / 2 }} />;
   }
@@ -12,4 +12,6 @@ export default function Avatar({ uri, name, size = 48 }: AvatarProps) {
       <Text style={{ fontSize: size * 0.4, color: '#000', fontWeight: 'bold' }}>{initials}</Text>
     </View>
   );
-}
+});
+
+export default Avatar;

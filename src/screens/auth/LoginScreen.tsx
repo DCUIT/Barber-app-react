@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { View, Text, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -12,7 +12,8 @@ type Nav = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen() {
   const nav = useNavigation<Nav>();
-  const { login, isLoading } = useAuthStore();
+  const login = useAuthStore((s) => s.login);
+  const isLoading = useAuthStore((s) => s.isLoading);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -25,7 +26,7 @@ export default function LoginScreen() {
     return Object.keys(e).length === 0;
   };
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     if (!validate()) return;
     try {
       await login(username.trim(), password);
@@ -33,7 +34,7 @@ export default function LoginScreen() {
     } catch (err: any) {
       Toast.show({ type: 'error', text1: 'Lỗi', text2: err?.response?.data?.msg || 'Sai tài khoản hoặc mật khẩu!' });
     }
-  };
+  }, [username, password, login]);
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, backgroundColor: '#1a1a2e' }}>

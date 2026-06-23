@@ -1,8 +1,8 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, memo } from 'react-native';
 
 interface ErrorStateProps { message: string; onRetry?: () => void }
 
-export default function ErrorState({ message, onRetry }: ErrorStateProps) {
+const ErrorState = memo(function ErrorState({ message, onRetry }: ErrorStateProps) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 48, paddingHorizontal: 24 }}>
       <Text style={{ fontSize: 40, marginBottom: 16 }}>⚠️</Text>
@@ -15,4 +15,6 @@ export default function ErrorState({ message, onRetry }: ErrorStateProps) {
       )}
     </View>
   );
-}
+});
+
+export default ErrorState;

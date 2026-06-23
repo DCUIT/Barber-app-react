@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native';
+import { View, Text, memo } from 'react-native';
 import Avatar from './ui/Avatar';
 import { formatDateTime } from '../utils/format';
 import type { Review } from '../types/models';
 
 interface ReviewItemProps { review: Review }
 
-export default function ReviewItem({ review }: ReviewItemProps) {
+const ReviewItem = memo(function ReviewItem({ review }: ReviewItemProps) {
   return (
     <View className="bg-[#16213e] rounded-xl p-4 mb-3 border border-gray-700">
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
@@ -23,4 +23,6 @@ export default function ReviewItem({ review }: ReviewItemProps) {
       {review.comment ? <Text className="text-gray-300 text-sm mt-1">{review.comment}</Text> : null}
     </View>
   );
-}
+});
+
+export default ReviewItem;

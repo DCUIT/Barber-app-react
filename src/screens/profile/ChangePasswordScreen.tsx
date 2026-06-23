@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { authApi } from '../../api/auth';
@@ -22,13 +22,13 @@ export default function ChangePasswordScreen() {
     return Object.keys(e).length === 0;
   };
 
-  const handleChange = async () => {
+  const handleChange = useCallback(async () => {
     if (!validate()) return;
     setLoading(true);
     try { await authApi.changePassword({ currentPassword: current, newPassword: newPw }); Toast.show({ type: 'success', text1: 'Đổi mật khẩu thành công!' }); setCurrent(''); setNewPw(''); setConfirm(''); }
     catch (err: any) { Toast.show({ type: 'error', text1: 'Lỗi', text2: err?.response?.data?.msg || 'Đổi mật khẩu thất bại' }); }
     finally { setLoading(false); }
-  };
+  }, [current, newPw, confirm]);
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#1a1a2e', paddingHorizontal: 16 }} contentContainerStyle={{ paddingVertical: 32 }}>

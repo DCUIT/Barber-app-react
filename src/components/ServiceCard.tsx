@@ -1,10 +1,10 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, memo } from 'react-native';
 import { formatPrice } from '../utils/format';
 import type { Service } from '../types/models';
 
 interface ServiceCardProps { service: Service; selected?: boolean; onPress?: () => void }
 
-export default function ServiceCard({ service, selected, onPress }: ServiceCardProps) {
+const ServiceCard = memo(function ServiceCard({ service, selected, onPress }: ServiceCardProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -16,4 +16,6 @@ export default function ServiceCard({ service, selected, onPress }: ServiceCardP
       <Text className="text-gray-500 text-xs mt-1">{service.durationMinutes} phút</Text>
     </TouchableOpacity>
   );
-}
+});
+
+export default ServiceCard;

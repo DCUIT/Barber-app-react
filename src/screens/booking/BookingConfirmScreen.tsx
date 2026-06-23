@@ -1,6 +1,5 @@
 import { View, Text } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import Button from '../../components/ui/Button';
 import { formatPrice, formatDate } from '../../utils/format';
 
 export default function BookingConfirmScreen() {
@@ -39,7 +38,6 @@ export default function BookingConfirmScreen() {
           </>
         )}
       </View>
-      <Button title="Xem lịch sử đặt lịch" variant="outline" onPress={() => {}} />
     </View>
   );
 }

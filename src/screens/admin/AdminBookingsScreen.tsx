@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { bookingsApi } from '../../api/bookings';
@@ -13,15 +13,16 @@ export default function AdminBookingsScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
+  const mountedRef = useRef(true);
 
   const fetch = useCallback(async () => {
-    try { const res = await bookingsApi.getAll(); setBookings(res.data.bookings || []); setError(''); }
-    catch (err: any) { setError(err?.response?.data?.msg || 'Không thể tải bookings'); }
-    finally { setLoading(false); setRefreshing(false); }
+    try { const res = await bookingsApi.getAll(); if (!mountedRef.current) return; setBookings(res.data.bookings || []); setError(''); }
+    catch (err: any) { if (mountedRef.current) setError(err?.response?.data?.msg || 'Không thể tải bookings'); }
+    finally { if (mountedRef.current) { setLoading(false); setRefreshing(false); } }
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
-  const onRefresh = () => { setRefreshing(true); fetch(); };
+  useEffect(() => { mountedRef.current = true; fetch(); return () => { mountedRef.current = false; }; }, [fetch]);
+  const onRefresh = useCallback(() => { setRefreshing(true); fetch(); }, [fetch]);
 
   const updateStatus = async (id: string, status: string) => {
     try { await bookingsApi.updateStatus(id, status); Toast.show({ type: 'success', text1: 'Đã cập nhật' }); fetch(); }

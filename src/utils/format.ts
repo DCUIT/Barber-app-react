@@ -1,19 +1,23 @@
+const CURRENCY_FORMATTER = new Intl.NumberFormat('vi-VN');
+const DATE_FORMATTER = new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const DATETIME_FORMATTER = new Intl.DateTimeFormat('vi-VN', {
+  day: '2-digit', month: '2-digit', year: 'numeric',
+  hour: '2-digit', minute: '2-digit',
+});
+
 export function formatPrice(amount: number): string {
   if (!amount) return '0đ';
-  return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+  return CURRENCY_FORMATTER.format(amount) + 'đ';
 }
 
 export function formatDate(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  return DATE_FORMATTER.format(d);
 }
 
 export function formatDateTime(dateStr: string): string {
   const d = new Date(dateStr);
-  return d.toLocaleDateString('vi-VN', {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
-  });
+  return DATETIME_FORMATTER.format(d);
 }
 
 export function toDateInputString(date: Date): string {

@@ -1,20 +1,24 @@
-import { View, Text, TextInput as RNInput, type TextInputProps } from 'react-native';
+import { View, Text, TextInput as RNInput, memo, type TextInputProps } from 'react-native';
 
 interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
+  className?: string;
 }
 
-export default function Input({ label, error, className = '', ...props }: InputProps) {
+const Input = memo(function Input({ label, error, className = '', style, ...props }: InputProps) {
   return (
     <View style={{ marginBottom: 16 }}>
       {label && <Text style={{ color: '#9ca3af', fontSize: 13, fontWeight: '600', marginBottom: 4 }}>{label}</Text>}
       <RNInput
         className={`bg-white text-black rounded-lg px-4 py-3 border ${error ? 'border-red-500' : 'border-gray-600'} ${className}`}
         placeholderTextColor="#9ca3af"
+        style={style}
         {...props}
       />
       {error && <Text style={{ color: '#ef4444', fontSize: 12, marginTop: 4 }}>{error}</Text>}
     </View>
   );
-}
+});
+
+export default Input;

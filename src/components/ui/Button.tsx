@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, ActivityIndicator, type ViewStyle } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, memo, type ViewStyle } from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -10,7 +10,7 @@ interface ButtonProps {
   style?: ViewStyle;
 }
 
-export default function Button({ title, onPress, variant = 'primary', loading, disabled, className = '', style }: ButtonProps) {
+const Button = memo(function Button({ title, onPress, variant = 'primary', loading, disabled, className = '', style }: ButtonProps) {
   const bg = variant === 'primary' ? 'bg-[#c5a059]' : variant === 'secondary' ? 'bg-[#8b0000]' : 'border-2 border-[#c5a059]';
   const txt = variant === 'outline' ? 'text-[#c5a059]' : 'text-black';
   return (
@@ -24,4 +24,6 @@ export default function Button({ title, onPress, variant = 'primary', loading, d
       <Text className={`font-bold uppercase tracking-wider text-sm ${txt}`}>{title}</Text>
     </TouchableOpacity>
   );
-}
+});
+
+export default Button;

@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { barbersApi } from '../../api/barbers';
-import BarberCard from '../../components/BarberCard';
+import Avatar from '../../components/ui/Avatar';
 import Button from '../../components/ui/Button';
 import Loading from '../../components/ui/Loading';
 import Modal from '../../components/ui/Modal';
@@ -16,13 +16,14 @@ export default function AdminBarbersScreen() {
   const [editing, setEditing] = useState<Barber | null>(null);
   const [form, setForm] = useState({ name: '', specialty: '', experience: '', avatar: '' });
   const [saving, setSaving] = useState(false);
+  const mountedRef = useRef(true);
 
   const fetch = useCallback(async () => {
-    try { const res = await barbersApi.getAll(); setBarbers(res.data || []); }
-    catch {} finally { setLoading(false); setRefreshing(false); }
+    try { const res = await barbersApi.getAll(); if (mountedRef.current) setBarbers(res.data || []); }
+    catch {} finally { if (mountedRef.current) { setLoading(false); setRefreshing(false); } }
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { mountedRef.current = true; fetch(); return () => { mountedRef.current = false; }; }, [fetch]);
 
   const openCreate = () => { setEditing(null); setForm({ name: '', specialty: '', experience: '', avatar: '' }); setModal(true); };
   const openEdit = (b: Barber) => { setEditing(b); setForm({ name: b.name, specialty: b.specialty || '', experience: String(b.experienceYears || 0), avatar: b.avatar || '' }); setModal(true); };
@@ -39,10 +40,10 @@ export default function AdminBarbersScreen() {
     finally { setSaving(false); }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     try { await barbersApi.delete(id); Toast.show({ type: 'success', text1: 'Đã xóa' }); fetch(); }
     catch { Toast.show({ type: 'error', text1: 'Xóa thất bại' }); }
-  };
+  }, [fetch]);
 
   if (loading) return <Loading fullScreen />;
 
@@ -54,8 +55,13 @@ export default function AdminBarbersScreen() {
       </View>
       {barbers.map((b) => (
         <View key={b._id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#16213e', borderRadius: 12, padding: 12, marginBottom: 12, borderWidth: 1, borderColor: '#374151' }}>
-          <BarberCard barber={b} />
-          <View style={{ marginLeft: 'auto', gap: 8 }}>
+          <Avatar uri={b.avatar} name={b.name} size={48} />
+          <View style={{ marginLeft: 12, flex: 1 }}>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15 }}>{b.name}</Text>
+            <Text style={{ color: '#9ca3af', fontSize: 12 }}>{b.specialty} • {b.experienceYears} năm</Text>
+            <Text style={{ color: '#c5a059', fontSize: 12 }}>★ {b.rating.toFixed(1)} ({b.reviewCount})</Text>
+          </View>
+          <View style={{ gap: 8 }}>
             <TouchableOpacity onPress={() => openEdit(b)} style={{ backgroundColor: '#2563eb', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 4 }}><Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold' }}>Sửa</Text></TouchableOpacity>
             <TouchableOpacity onPress={() => handleDelete(b._id)} style={{ backgroundColor: '#dc2626', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 4 }}><Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold' }}>Xóa</Text></TouchableOpacity>
           </View>

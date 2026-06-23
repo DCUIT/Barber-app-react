@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { bookingsApi } from '../../api/bookings';
 import BookingCard from '../../components/BookingCard';
@@ -12,18 +12,20 @@ export default function BookingHistoryScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
+  const mountedRef = useRef(true);
 
   const fetch = useCallback(async () => {
     try {
       const res = await bookingsApi.getAll();
+      if (!mountedRef.current) return;
       setBookings(res.data.bookings || []);
       setError('');
-    } catch (err: any) { setError(err?.response?.data?.msg || 'Không thể tải lịch sử'); }
-    finally { setLoading(false); setRefreshing(false); }
+    } catch (err: any) { if (mountedRef.current) setError(err?.response?.data?.msg || 'Không thể tải lịch sử'); }
+    finally { if (mountedRef.current) { setLoading(false); setRefreshing(false); } }
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
-  const onRefresh = () => { setRefreshing(true); fetch(); };
+  useEffect(() => { mountedRef.current = true; fetch(); return () => { mountedRef.current = false; }; }, [fetch]);
+  const onRefresh = useCallback(() => { setRefreshing(true); fetch(); }, [fetch]);
 
   if (loading) return <Loading fullScreen />;
   if (error) return <ErrorState message={error} onRetry={fetch} />;

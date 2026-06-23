@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, memo } from 'react-native';
 import Badge from './ui/Badge';
 import { formatPrice, formatDate } from '../utils/format';
 import { STATUS_MAP } from '../utils/constants';
@@ -13,7 +13,7 @@ interface BookingCardProps {
   onCancel?: () => void;
 }
 
-export default function BookingCard({ booking, onPress, showActions, onAccept, onComplete, onCancel }: BookingCardProps) {
+const BookingCard = memo(function BookingCard({ booking, onPress, showActions, onAccept, onComplete, onCancel }: BookingCardProps) {
   const s = STATUS_MAP[booking.status] || { label: booking.status, color: '#999' };
   return (
     <TouchableOpacity onPress={onPress} className="bg-[#16213e] rounded-xl p-4 mb-3 border border-gray-700">
@@ -52,4 +52,6 @@ export default function BookingCard({ booking, onPress, showActions, onAccept, o
       )}
     </TouchableOpacity>
   );
-}
+});
+
+export default BookingCard;

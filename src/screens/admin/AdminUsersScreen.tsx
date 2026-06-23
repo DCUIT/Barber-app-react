@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { authApi } from '../../api/auth';
@@ -15,13 +15,14 @@ export default function AdminUsersScreen() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const mountedRef = useRef(true);
 
   const fetch = useCallback(async () => {
-    try { const res = await authApi.getUsers(); setUsers(res.data || []); }
-    catch {} finally { setLoading(false); setRefreshing(false); }
+    try { const res = await authApi.getUsers(); if (mountedRef.current) setUsers(res.data || []); }
+    catch {} finally { if (mountedRef.current) { setLoading(false); setRefreshing(false); } }
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { mountedRef.current = true; fetch(); return () => { mountedRef.current = false; }; }, [fetch]);
 
   const toggleRole = async (u: User) => {
     const nr = u.role === 'user' ? 'barber' : u.role === 'barber' ? 'admin' : 'user';

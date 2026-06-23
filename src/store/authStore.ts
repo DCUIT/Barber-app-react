@@ -79,3 +79,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return roles.includes(user.role);
   },
 }));
+
+export const selectUser = (s: AuthState) => s.user;
+export const selectToken = (s: AuthState) => s.token;
+export const selectIsLoading = (s: AuthState) => s.isLoading;
+export const selectIsInitialized = (s: AuthState) => s.isInitialized;

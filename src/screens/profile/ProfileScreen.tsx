@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { useState, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../../store/authStore';
@@ -11,7 +11,9 @@ import Input from '../../components/ui/Input';
 
 export default function ProfileScreen() {
   const nav = useNavigation<any>();
-  const { user, logout, setUser } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const setUser = useAuthStore((s) => s.setUser);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
@@ -19,14 +21,14 @@ export default function ProfileScreen() {
   const [saving, setSaving] = useState(false);
   const roleLabel = user?.role === 'admin' ? 'Quản trị viên' : user?.role === 'barber' ? 'Barber' : 'Khách hàng';
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     setSaving(true);
     try { const res = await authApi.updateProfile({ name, phone, avatar }); setUser(res.data); Toast.show({ type: 'success', text1: 'Cập nhật thành công' }); setEditing(false); }
     catch (err: any) { Toast.show({ type: 'error', text1: 'Lỗi', text2: err?.response?.data?.msg || 'Cập nhật thất bại' }); }
     finally { setSaving(false); }
-  };
+  }, [name, phone, avatar, setUser]);
 
-  const handleLogout = async () => { await logout(); Toast.show({ type: 'success', text1: 'Đã đăng xuất' }); };
+  const handleLogout = useCallback(async () => { await logout(); Toast.show({ type: 'success', text1: 'Đã đăng xuất' }); }, [logout]);
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#1a1a2e', paddingHorizontal: 16 }} contentContainerStyle={{ paddingBottom: 32 }}>

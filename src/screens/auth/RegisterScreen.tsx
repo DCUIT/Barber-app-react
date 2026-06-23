@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { View, Text, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -12,7 +12,8 @@ type Nav = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
 export default function RegisterScreen() {
   const nav = useNavigation<Nav>();
-  const { register, isLoading } = useAuthStore();
+  const register = useAuthStore((s) => s.register);
+  const isLoading = useAuthStore((s) => s.isLoading);
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -30,7 +31,7 @@ export default function RegisterScreen() {
     return Object.keys(e).length === 0;
   };
 
-  const handleRegister = async () => {
+  const handleRegister = useCallback(async () => {
     if (!validate()) return;
     try {
       await register(name.trim(), username.trim(), password);
@@ -39,7 +40,7 @@ export default function RegisterScreen() {
     } catch (err: any) {
       Toast.show({ type: 'error', text1: 'Lỗi', text2: err?.response?.data?.msg || 'Đăng ký thất bại!' });
     }
-  };
+  }, [name, username, password, register, nav]);
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, backgroundColor: '#1a1a2e' }}>

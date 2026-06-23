@@ -1,10 +1,10 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, memo } from 'react-native';
 import Avatar from './ui/Avatar';
 import type { Barber } from '../types/models';
 
 interface BarberCardProps { barber: Barber; selected?: boolean; onPress?: () => void }
 
-export default function BarberCard({ barber, selected, onPress }: BarberCardProps) {
+const BarberCard = memo(function BarberCard({ barber, selected, onPress }: BarberCardProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -20,4 +20,6 @@ export default function BarberCard({ barber, selected, onPress }: BarberCardProp
       <Text className="text-gray-500 text-xs text-center mt-1">{barber.experienceYears} năm KN</Text>
     </TouchableOpacity>
   );
-}
+});
+
+export default BarberCard;

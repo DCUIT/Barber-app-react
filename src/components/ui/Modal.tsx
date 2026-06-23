@@ -1,8 +1,8 @@
-import { View, Text, Modal as RNModal, TouchableOpacity } from 'react-native';
+import { View, Text, Modal as RNModal, TouchableOpacity, memo } from 'react-native';
 
 interface ModalProps { visible: boolean; onClose: () => void; title?: string; children: React.ReactNode }
 
-export default function Modal({ visible, onClose, title, children }: ModalProps) {
+const Modal = memo(function Modal({ visible, onClose, title, children }: ModalProps) {
   return (
     <RNModal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 24 }}>
@@ -20,4 +20,6 @@ export default function Modal({ visible, onClose, title, children }: ModalProps)
       </View>
     </RNModal>
   );
-}
+});
+
+export default Modal;

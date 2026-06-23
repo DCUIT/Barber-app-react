@@ -1,8 +1,8 @@
-import { View, Text } from 'react-native';
+import { View, Text, memo } from 'react-native';
 
 interface EmptyStateProps { title: string; message?: string }
 
-export default function EmptyState({ title, message }: EmptyStateProps) {
+const EmptyState = memo(function EmptyState({ title, message }: EmptyStateProps) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 48, paddingHorizontal: 24 }}>
       <Text style={{ fontSize: 40, marginBottom: 16 }}>📭</Text>
@@ -10,4 +10,6 @@ export default function EmptyState({ title, message }: EmptyStateProps) {
       {message && <Text style={{ color: '#9ca3af', fontSize: 14, textAlign: 'center' }}>{message}</Text>}
     </View>
   );
-}
+});
+
+export default EmptyState;

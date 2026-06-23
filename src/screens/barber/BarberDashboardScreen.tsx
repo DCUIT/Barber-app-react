@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
@@ -16,19 +16,21 @@ export default function BarberDashboardScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
+  const mountedRef = useRef(true);
 
   const fetch = useCallback(async () => {
     try {
       const date = toDateInputString(new Date());
       const res = await bookingsApi.getTodayBookings(date);
+      if (!mountedRef.current) return;
       setBookings(res.data.bookings || []);
       setError('');
-    } catch (err: any) { setError(err?.response?.data?.msg || 'Không thể tải dữ liệu'); }
-    finally { setLoading(false); setRefreshing(false); }
+    } catch (err: any) { if (mountedRef.current) setError(err?.response?.data?.msg || 'Không thể tải dữ liệu'); }
+    finally { if (mountedRef.current) { setLoading(false); setRefreshing(false); } }
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
-  const onRefresh = () => { setRefreshing(true); fetch(); };
+  useEffect(() => { mountedRef.current = true; fetch(); return () => { mountedRef.current = false; }; }, [fetch]);
+  const onRefresh = useCallback(() => { setRefreshing(true); fetch(); }, [fetch]);
 
   const updateStatus = async (id: string, status: string) => {
     try { await bookingsApi.updateStatus(id, status); Toast.show({ type: 'success', text1: 'Đã cập nhật' }); fetch(); }
