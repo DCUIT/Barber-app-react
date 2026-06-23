@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "The Cutting Edge Barber",
+    "slug": "barber-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#1a1a2e",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.barber.cuttingedge"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1a1a2e"
+      },
+      "package": "com.barber.cuttingedge"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
