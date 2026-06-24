@@ -37,55 +37,73 @@ function LazyScreen({ component: Component }: { component: React.ComponentType }
   );
 }
 
+const HomeMain = () => <LazyScreen component={HomeScreen} />;
+
 const HomeStack = createNativeStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="HomeMain">{() => <LazyScreen component={HomeScreen} />}</HomeStack.Screen>
+      <HomeStack.Screen name="HomeMain" component={HomeMain} />
     </HomeStack.Navigator>
   );
 }
+
+const BookingMain = () => <LazyScreen component={BookingScreen} />;
+const BookingConfirm = () => <LazyScreen component={BookingConfirmScreen} />;
 
 const BookingStack = createNativeStackNavigator();
 function BookingStackScreen() {
   return (
     <BookingStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#1a1a2e' }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: 'bold' } }}>
-      <BookingStack.Screen name="BookingMain" options={{ title: 'Đặt lịch' }}>{() => <LazyScreen component={BookingScreen} />}</BookingStack.Screen>
-      <BookingStack.Screen name="BookingConfirm" options={{ title: 'Xác nhận' }}>{() => <LazyScreen component={BookingConfirmScreen} />}</BookingStack.Screen>
+      <BookingStack.Screen name="BookingMain" options={{ title: 'Đặt lịch' }} component={BookingMain} />
+      <BookingStack.Screen name="BookingConfirm" options={{ title: 'Xác nhận' }} component={BookingConfirm} />
     </BookingStack.Navigator>
   );
 }
+
+const ProfileMain = () => <LazyScreen component={ProfileScreen} />;
+const BookingHistory = () => <LazyScreen component={BookingHistoryScreen} />;
+const ChangePassword = () => <LazyScreen component={ChangePasswordScreen} />;
 
 const ProfileStack = createNativeStackNavigator();
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#1a1a2e' }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: 'bold' } }}>
-      <ProfileStack.Screen name="ProfileMain" options={{ title: 'Hồ sơ' }}>{() => <LazyScreen component={ProfileScreen} />}</ProfileStack.Screen>
-      <ProfileStack.Screen name="BookingHistory" options={{ title: 'Lịch sử' }}>{() => <LazyScreen component={BookingHistoryScreen} />}</ProfileStack.Screen>
-      <ProfileStack.Screen name="ChangePassword" options={{ title: 'Đổi mật khẩu' }}>{() => <LazyScreen component={ChangePasswordScreen} />}</ProfileStack.Screen>
+      <ProfileStack.Screen name="ProfileMain" options={{ title: 'Hồ sơ' }} component={ProfileMain} />
+      <ProfileStack.Screen name="BookingHistory" options={{ title: 'Lịch sử' }} component={BookingHistory} />
+      <ProfileStack.Screen name="ChangePassword" options={{ title: 'Đổi mật khẩu' }} component={ChangePassword} />
     </ProfileStack.Navigator>
   );
 }
+
+const BarberDashboard = () => <LazyScreen component={BarberDashboardScreen} />;
+const BarberBookings = () => <LazyScreen component={BarberBookingsScreen} />;
 
 const BarberStack = createNativeStackNavigator();
 function BarberStackScreen() {
   return (
     <BarberStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#1a1a2e' }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: 'bold' } }}>
-      <BarberStack.Screen name="BarberDashboard" options={{ title: 'Dashboard Barber' }}>{() => <LazyScreen component={BarberDashboardScreen} />}</BarberStack.Screen>
-      <BarberStack.Screen name="BarberBookings" options={{ title: 'Quản lý lịch' }}>{() => <LazyScreen component={BarberBookingsScreen} />}</BarberStack.Screen>
+      <BarberStack.Screen name="BarberDashboard" options={{ title: 'Dashboard Barber' }} component={BarberDashboard} />
+      <BarberStack.Screen name="BarberBookings" options={{ title: 'Quản lý lịch' }} component={BarberBookings} />
     </BarberStack.Navigator>
   );
 }
+
+const AdminDashboard = () => <LazyScreen component={AdminDashboardScreen} />;
+const AdminBookings = () => <LazyScreen component={AdminBookingsScreen} />;
+const AdminServices = () => <LazyScreen component={AdminServicesScreen} />;
+const AdminBarbers = () => <LazyScreen component={AdminBarbersScreen} />;
+const AdminUsers = () => <LazyScreen component={AdminUsersScreen} />;
 
 const AdminStack = createNativeStackNavigator();
 function AdminStackScreen() {
   return (
     <AdminStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#1a1a2e' }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: 'bold' } }}>
-      <AdminStack.Screen name="AdminDashboard" options={{ title: 'Admin' }}>{() => <LazyScreen component={AdminDashboardScreen} />}</AdminStack.Screen>
-      <AdminStack.Screen name="AdminBookings" options={{ title: 'Quản lý Booking' }}>{() => <LazyScreen component={AdminBookingsScreen} />}</AdminStack.Screen>
-      <AdminStack.Screen name="AdminServices" options={{ title: 'Quản lý Dịch vụ' }}>{() => <LazyScreen component={AdminServicesScreen} />}</AdminStack.Screen>
-      <AdminStack.Screen name="AdminBarbers" options={{ title: 'Quản lý Barber' }}>{() => <LazyScreen component={AdminBarbersScreen} />}</AdminStack.Screen>
-      <AdminStack.Screen name="AdminUsers" options={{ title: 'Quản lý Người dùng' }}>{() => <LazyScreen component={AdminUsersScreen} />}</AdminStack.Screen>
+      <AdminStack.Screen name="AdminDashboard" options={{ title: 'Admin' }} component={AdminDashboard} />
+      <AdminStack.Screen name="AdminBookings" options={{ title: 'Quản lý Booking' }} component={AdminBookings} />
+      <AdminStack.Screen name="AdminServices" options={{ title: 'Quản lý Dịch vụ' }} component={AdminServices} />
+      <AdminStack.Screen name="AdminBarbers" options={{ title: 'Quản lý Barber' }} component={AdminBarbers} />
+      <AdminStack.Screen name="AdminUsers" options={{ title: 'Quản lý Người dùng' }} component={AdminUsers} />
     </AdminStack.Navigator>
   );
 }
@@ -106,25 +124,15 @@ export default function MainTabNavigator() {
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
       }}
     >
-      <Tab.Screen name="Home" options={{ tabBarLabel: 'Trang chủ', tabBarIcon: ({ focused }) => <TabLabel label="Trang chủ" focused={focused} /> }}>
-        {() => <HomeStackScreen />}
-      </Tab.Screen>
-      <Tab.Screen name="Booking" options={{ tabBarLabel: 'Đặt lịch', tabBarIcon: ({ focused }) => <TabLabel label="Đặt lịch" focused={focused} /> }}>
-        {() => <BookingStackScreen />}
-      </Tab.Screen>
+      <Tab.Screen name="Home" component={HomeStackScreen} options={{ tabBarLabel: 'Trang chủ', tabBarIcon: ({ focused }) => <TabLabel label="Trang chủ" focused={focused} /> }} />
+      <Tab.Screen name="Booking" component={BookingStackScreen} options={{ tabBarLabel: 'Đặt lịch', tabBarIcon: ({ focused }) => <TabLabel label="Đặt lịch" focused={focused} /> }} />
       {(role === 'barber' || role === 'admin') && (
-        <Tab.Screen name="Barber" options={{ tabBarLabel: 'Dashboard', tabBarIcon: ({ focused }) => <TabLabel label="Dashboard" focused={focused} /> }}>
-          {() => <BarberStackScreen />}
-        </Tab.Screen>
+        <Tab.Screen name="Barber" component={BarberStackScreen} options={{ tabBarLabel: 'Dashboard', tabBarIcon: ({ focused }) => <TabLabel label="Dashboard" focused={focused} /> }} />
       )}
       {role === 'admin' && (
-        <Tab.Screen name="Admin" options={{ tabBarLabel: 'Quản trị', tabBarIcon: ({ focused }) => <TabLabel label="Quản trị" focused={focused} /> }}>
-          {() => <AdminStackScreen />}
-        </Tab.Screen>
+        <Tab.Screen name="Admin" component={AdminStackScreen} options={{ tabBarLabel: 'Quản trị', tabBarIcon: ({ focused }) => <TabLabel label="Quản trị" focused={focused} /> }} />
       )}
-      <Tab.Screen name="Profile" options={{ tabBarLabel: 'Hồ sơ', tabBarIcon: ({ focused }) => <TabLabel label="Hồ sơ" focused={focused} /> }}>
-        {() => <ProfileStackScreen />}
-      </Tab.Screen>
+      <Tab.Screen name="Profile" component={ProfileStackScreen} options={{ tabBarLabel: 'Hồ sơ', tabBarIcon: ({ focused }) => <TabLabel label="Hồ sơ" focused={focused} /> }} />
     </Tab.Navigator>
   );
 }
