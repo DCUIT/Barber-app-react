@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { servicesApi } from '../../api/services';
@@ -64,13 +65,39 @@ function StepDateTime({ date, time, slots, loadingSlots, today, onDateChange, on
   date: string; time: string; slots: string[]; loadingSlots: boolean; today: string;
   onDateChange: (d: string) => void; onTimeChange: (t: string) => void;
 }) {
+  const [showPicker, setShowPicker] = useState(false);
+
+  const handleDateSelect = (_event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') setShowPicker(false);
+    if (selectedDate) onDateChange(toDateInputString(selectedDate));
+  };
+
   return (
     <View>
       <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 16 }}>3. {STEP_LABELS.datetime}</Text>
       <Text style={{ color: '#9ca3af', fontSize: 13, marginBottom: 8 }}>Chọn ngày:</Text>
-      <TextInput style={{ backgroundColor: '#fff', color: '#000', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16 }}
-        placeholder="YYYY-MM-DD" placeholderTextColor="#9ca3af" value={date}
-        onChangeText={onDateChange} />
+      <TouchableOpacity
+        onPress={() => setShowPicker(true)}
+        style={{ backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 14, marginBottom: 16 }}
+      >
+        <Text style={{ color: date ? '#000' : '#9ca3af', fontSize: 16 }}>
+          {date || 'Chọn ngày...'}
+        </Text>
+      </TouchableOpacity>
+      {showPicker && (
+        <DateTimePicker
+          value={date ? new Date(date + 'T00:00:00') : new Date()}
+          mode="date"
+          display="default"
+          minimumDate={new Date()}
+          onChange={handleDateSelect}
+        />
+      )}
+      {Platform.OS === 'ios' && showPicker && (
+        <TouchableOpacity onPress={() => setShowPicker(false)} style={{ marginBottom: 16 }}>
+          <Text style={{ color: '#c5a059', textAlign: 'center', fontWeight: 'bold' }}>Xong</Text>
+        </TouchableOpacity>
+      )}
       {date >= today && (
         <>
           <Text style={{ color: '#9ca3af', fontSize: 13, marginBottom: 8 }}>Chọn giờ:</Text>
